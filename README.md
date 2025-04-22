@@ -33,7 +33,17 @@ To understand how SVGD works, particularly the **consensus ascent** and the **re
 
 The true magnitude of the repulsion term is much smaller than the other terms. The quiver plot automatically scales the magnitude. 
 
-# Notes on implementation:
+## Key facts
+- Subclass of VI (Variational Inference)
+- In case of 1 particle it reduces to an MAP estimate
+- Given the initialisation SVGD is deterministic, unlike MCMC
+- General-purpose because no functional form for a family of distribution must be assumed as in classical VI
+- Stein gradient are guiding the particles in the steepest direction of KL decrease
+- drawing on Stein operators, the Stein identity and the Reproducing Kernel Hilbert Space
+- gradient updates do not require access to normalisation term
+- joint consideration of repulsion
+
+### Notes on implementation
 
 - use **median heuristic** for bandwidth/lengthscale
 
