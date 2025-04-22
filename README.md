@@ -16,7 +16,7 @@ Other resources that helped me understand Stein include:
 Applications](https://www.cs.utexas.edu/~lqiang/PDF/svgd_aabi2016.pdf)
 - [Depth first blogpost](https://www.depthfirstlearning.com/2020/SVGD)
 
-# Summary of turn_the_stein.ipynb
+# Summary of `turn_the_stein.ipynb`
 
 Given is a target distribution, which is a bimodal Gaussian Mixture in 2D:
 ![target distribution](img/target_distribution.png)
@@ -31,6 +31,8 @@ To understand how SVGD works, particularly the **consensus ascent** and the **re
 
 ![components](img/svg_components.png)
 
+The true magnitude of the repulsion term is much smaller than the other terms. The quiver plot automatically scales the magnitude. 
+
 # Notes on implementation:
 
 - use **median heuristic** for bandwidth/lengthscale
@@ -39,23 +41,31 @@ To understand how SVGD works, particularly the **consensus ascent** and the **re
 
 Analytical derivations of the gradient of the kernel
 
-\begin{table}[h!]
-\centering
-\begin{tabular}{|c|l|}
-\hline
-\textbf{Quantity} & \textbf{Expression} \\
-\hline
-RBF Kernel & \( k(x, x') = \exp\left(-\frac{1}{h} \|x - x'\|^2 \right) \) \\
-\hline
-Gradient w.r.t. \( x \) & \( \nabla_x k(x, x') = -\frac{2}{h} (x - x') \cdot k(x, x') \) \\
-\hline
-Gradient w.r.t. \( x' \) & \( \nabla_{x'} k(x, x') = +\frac{2}{h} (x - x') \cdot k(x, x') \) \\
-\hline
-\end{tabular}
-\caption{RBF kernel and its gradients}
-\end{table}
+- RBF Kernel: $ k(x, x') = \exp\left(-\frac{1}{h} \|x - x'\|^2 \right) $
+- Gradient w.r.t. x: $ \nabla_x k(x, x') = -\frac{2}{h} (x - x') \cdot k(x, x')$
+- Gradient w.r.t. x':$ \nabla_{x'} k(x, x') = +\frac{2}{h} (x - x') \cdot k(x, x')$
 
 We require the gradient w.r.t. \( x' \), see paper, so that a repulsion is achieved. The kernel is symmetric by definition. 
+
+### Derivations
+The gradient of \( k(x, x') \) with respect to \( x \) is computed as follows:
+
+First, differentiate the kernel expression. Let \( r = \|x - x'\|^2 \), so:
+\[
+k(x, x') = \exp\left(-\frac{1}{h} r \right)
+\]
+The derivative of the exponential function, following the chain rule, is:
+\[
+\frac{d}{dx} \exp\left(-\frac{1}{h} r \right) = \exp\left(-\frac{1}{h} r \right) \cdot \left(-\frac{1}{h} \frac{d}{dx} r \right)
+\]
+Now for the gradient with respect to \( x' \), differentiate \( \|x - x'\|^2 \) with respect to \( x' \):
+\[
+\frac{d}{dx'} \|x - x'\|^2 = -2(x - x')
+\]
+Thus, the gradient with respect to \( x' \) is:
+\[
+\nabla_{x'} k(x, x') = +\frac{2}{h} (x - x') \cdot k(x, x')
+\]
 
 # Ideas
 
