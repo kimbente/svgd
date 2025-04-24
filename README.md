@@ -23,7 +23,7 @@ This is what Stein can do:
 
 ![til](gifs/svgd_animation_center_init.gif)
 
-Let's break it down: Given is a target distribution, which is a bimodal Gaussian Mixture in 2D:
+Let's break it down: Given is a target distribution, which in this case is a bimodal Gaussian Mixture in 2D:
 ![target distribution](img/target_distribution.png)
 
 We can retrieve the density of the target distribution at any given location x.
@@ -36,23 +36,26 @@ To understand how SVGD works, particularly the **consensus ascent** and the **re
 
 ![components](img/svg_components_unnormalised.png)
 
-The true magnitude of the repulsion term is much smaller than the other terms. The quiver plot automatically scales the magnitude. 
+The true magnitude of the repulsion term is much smaller than the other terms. The quiver plot automatically scales the magnitude. Here we fix the scale of the quivers:
 
 ![components](img/svg_components_normalised.png)
 
-Regular Stein also has some failure modes, when the prior is poorly defined for example:
+We see that the consensus ascent term dominates at t = 1.
+Regular Stein also has some failure modes, for example, when the prior is poorly defined:
 
 ![til](gifs/svgd_animation_localised_corner_init.gif)
 
+Quasi-Newton Stein can alleviate some of these issues, by using (approximate) high-order derivatives.
+
 ## Key facts
 - Subclass of VI (Variational Inference)
-- In case of 1 particle it reduces to an MAP estimate
-- Given the initialisation SVGD is deterministic, unlike MCMC
-- General-purpose because no functional form for a family of distribution must be assumed as in classical VI
-- Stein gradient are guiding the particles in the steepest direction of KL decrease
-- drawing on Stein operators, the Stein identity and the Reproducing Kernel Hilbert Space
-- gradient updates do not require access to normalisation term
-- joint consideration of repulsion
+- In case of one particle it reduces to a MAP estimate
+- Given the initialisation, SVGD is deterministic, unlike MCMC or Langevin methods
+- SVGD is general-purpose because no functional form for a family of distribution must be assumed as in classical VI
+- Stein gradients are guiding the particles in the steepest direction of KL decrease
+- The methods draws on Stein operators, the Stein identity and the Reproducing Kernel Hilbert Space
+- Gradient updates do not require access to normalisation term (the marginal liklihood) which is a great advantage.
+- A joined consideration of repulsion is integrated.
 
 # To Do
 - implement quasi-Newton Stein to avoid some failure modes
@@ -63,7 +66,7 @@ Regular Stein also has some failure modes, when the prior is poorly defined for 
 
 ## Repulsive term
 
-Analytical derivations of the gradient of the kernel (Latex code only renders locally.)
+Analytical derivations of the gradient of the kernel (*Latex code only renders locally.*)
 
 - RBF Kernel: $ k(x, x') = \exp\left(-\frac{1}{h} \|x - x'\|^2 \right) $
 - Gradient w.r.t. x: $ \nabla_x k(x, x') = -\frac{2}{h} (x - x') \cdot k(x, x')$
@@ -93,10 +96,10 @@ Thus, the gradient with respect to \( x' \) is:
 
 # Ideas
 
-- Stein for Optimisation (i.e. in Bayesian Optimisation, when trajectories matter, exploitation exploration trade-off, relation to Thompson sampling or BORE)
-- Stein for sparse GPs (inducing points), see [Tighter sparse variational Gaussian processes
+- Stein for Optimisation (i.e. in Bayesian Optimisation, when trajectories matter, exploitation-exploration trade-off, connections to Thompson sampling or BORE)
+- Stein for sparse GPs (inducing points), see recent paper [Tighter sparse variational Gaussian processes
 ](https://arxiv.org/abs/2502.04750)
-- preservation of probability mass (transport of probability mass), currently normalisation agnostic as we operate in the gradient space, relation to Normalising Flows
+- preservation of probability mass (transport of probability mass), currently normalisation agnostic as we operate in the gradient space; connection to Normalising Flows
 
 # Questions
 
