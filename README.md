@@ -19,7 +19,8 @@ Applications](https://www.cs.utexas.edu/~lqiang/PDF/svgd_aabi2016.pdf)
 
 # Summary of `turn_the_stein.ipynb`
 
-This is what Stein can do:
+This is what Stein can do:  
+
 ![til](gifs/svgd_animation_center_init.gif)
 
 Let's break it down: Given is a target distribution, which is a bimodal Gaussian Mixture in 2D:
@@ -38,6 +39,10 @@ To understand how SVGD works, particularly the **consensus ascent** and the **re
 The true magnitude of the repulsion term is much smaller than the other terms. The quiver plot automatically scales the magnitude. 
 
 ![components](img/svg_components_normalised.png)
+
+Regular Stein also has some failure modes, when the prior is poorly defined for example:
+
+![til](gifs/svgd_animation_localised_corner_init.gif)
 
 ## Key facts
 - Subclass of VI (Variational Inference)
