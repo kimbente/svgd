@@ -7,6 +7,7 @@ Liu, Qiang, and Dilin Wang. "Stein variational gradient descent: A general purpo
 
 The code is based on 
 - [Dilin Wang's original implementation](https://github.com/dilinwang820/Stein-Variational-Gradient-Descent/blob/master/python/svgd.py)
+    - The use a single function to return the kernel and its gradient to avoid duplicate computations.
 - [Stratis Markou's random walks blogpost on SVGD](https://github.com/stratisMarkou/random-walks/blob/master/random-walks/book/papers/svgd/svgd.ipynb)
     - however this implementation does not use the anatlytically derived gradient of the kernel as the repulsive term
     - this implementation also does not use the median heuristic but a fixed lengthscale i.e. bandwidth. 
@@ -18,7 +19,10 @@ Applications](https://www.cs.utexas.edu/~lqiang/PDF/svgd_aabi2016.pdf)
 
 # Summary of `turn_the_stein.ipynb`
 
-Given is a target distribution, which is a bimodal Gaussian Mixture in 2D:
+This is what Stein can do:
+![til](gifs/svgd_animation_center_init.gif)
+
+Let's break it down: Given is a target distribution, which is a bimodal Gaussian Mixture in 2D:
 ![target distribution](img/target_distribution.png)
 
 We can retrieve the density of the target distribution at any given location x.
@@ -29,9 +33,11 @@ Particles are initialised at (to a degree arbitrary) locations. This is the prio
 
 To understand how SVGD works, particularly the **consensus ascent** and the **repulsion term** that each update is composed of, we also visualise these vector fields individually. These are the vector fields at t = 1:
 
-![components](img/svg_components.png)
+![components](img/svg_components_unnormalised.png)
 
 The true magnitude of the repulsion term is much smaller than the other terms. The quiver plot automatically scales the magnitude. 
+
+![components](img/svg_components_normalised.png)
 
 ## Key facts
 - Subclass of VI (Variational Inference)
@@ -43,13 +49,16 @@ The true magnitude of the repulsion term is much smaller than the other terms. T
 - gradient updates do not require access to normalisation term
 - joint consideration of repulsion
 
+# To Do
+- implement quasi-Newton Stein to avoid some failure modes
+
 ### Notes on implementation
 
 - use **median heuristic** for bandwidth/lengthscale
 
 ## Repulsive term
 
-Analytical derivations of the gradient of the kernel
+Analytical derivations of the gradient of the kernel (Latex code only renders locally.)
 
 - RBF Kernel: $ k(x, x') = \exp\left(-\frac{1}{h} \|x - x'\|^2 \right) $
 - Gradient w.r.t. x: $ \nabla_x k(x, x') = -\frac{2}{h} (x - x') \cdot k(x, x')$
@@ -79,7 +88,12 @@ Thus, the gradient with respect to \( x' \) is:
 
 # Ideas
 
-- Stein for Optimisation (i.e. in Bayesian Optimisation, when trajectories matter)
+- Stein for Optimisation (i.e. in Bayesian Optimisation, when trajectories matter, exploitation exploration trade-off, relation to Thompson sampling or BORE)
 - Stein for sparse GPs (inducing points), see [Tighter sparse variational Gaussian processes
 ](https://arxiv.org/abs/2502.04750)
-- preservation of probability mass (transport of probability mass), currently normalisation agnostic
+- preservation of probability mass (transport of probability mass), currently normalisation agnostic as we operate in the gradient space, relation to Normalising Flows
+
+# Questions
+
+- Does the repulsive force ever also attract? 
+
